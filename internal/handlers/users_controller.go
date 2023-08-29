@@ -9,7 +9,7 @@ import (
 
 func (h *Handler) CreateUser() http.HandlerFunc {
 	type request struct {
-		Id string `json:"id"`
+		Id int `json:"id"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &request{}
@@ -20,7 +20,7 @@ func (h *Handler) CreateUser() http.HandlerFunc {
 		u := &entity.Users{
 			Id: req.Id,
 		}
-		if err := h.service.Users.Create(req.Id); err != nil {
+		if err := h.service.Users.Create(u); err != nil {
 			h.error(w, r, http.StatusInternalServerError, err)
 			return
 		}

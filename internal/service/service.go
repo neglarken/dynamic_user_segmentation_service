@@ -6,17 +6,20 @@ import (
 )
 
 type Users interface {
-	Create(id string) error
+	Create(u *entity.Users) error
 }
 
 type Slugs interface {
-	Create(title string) error
-	Delete(title string) error
+	Create(slugs *entity.Slugs) error
+	Delete(slugs *entity.Slugs) error
+	GetSlugIdBySlugTitle(title string) (*entity.Slugs, error)
+	GetTitleById(id int) (*entity.Slugs, error)
 }
 
 type SlugsUsers interface {
-	Add(title []string, id int) error
-	Get(id int) ([]*entity.SlugsUsers, error)
+	Add(su *entity.SlugsUsers) error
+	GetSlugIdsByUserId(id int) ([]*entity.SlugsUsers, error)
+	Delete(su *entity.SlugsUsers) error
 }
 
 type Service struct {

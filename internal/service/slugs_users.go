@@ -13,18 +13,26 @@ func NewSlugsUsersService(slugsUsersRepo repository.SlugsUsersRepository) *Slugs
 	return &SlugsUsersService{slugsUsersRepo: slugsUsersRepo}
 }
 
-func (s *SlugsUsersService) Add(title []string, id int) error {
-	err := s.slugsUsersRepo.Add(title, id)
+func (s *SlugsUsersService) Add(su *entity.SlugsUsers) error {
+	err := s.slugsUsersRepo.Add(su)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *SlugsUsersService) Get(id int) ([]*entity.SlugsUsers, error) {
-	slugs, err := s.slugsUsersRepo.Get(id)
+func (s *SlugsUsersService) GetSlugIdsByUserId(id int) ([]*entity.SlugsUsers, error) {
+	slugs, err := s.slugsUsersRepo.GetSlugIdsByUserId(id)
 	if err != nil {
 		return nil, err
 	}
 	return slugs, nil
+}
+
+func (s *SlugsUsersService) Delete(su *entity.SlugsUsers) error {
+	err := s.slugsUsersRepo.Delete(su)
+	if err != nil {
+		return err
+	}
+	return nil
 }

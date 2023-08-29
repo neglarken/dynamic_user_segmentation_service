@@ -1,7 +1,7 @@
 CREATE TABLE slugs
 (
-  id    BIGINT PRIMARY KEY,
-  title TEXT    NOT NULL
+  id    SERIAL PRIMARY KEY,
+  title TEXT   NOT NULL UNIQUE
 );
 
 CREATE TABLE users
@@ -11,6 +11,7 @@ CREATE TABLE users
 
 CREATE TABLE slugs_users
 (
-  user_id INTEGER REFERENCES users (id),
-  slug_id INTEGER REFERENCES slugs (id)
-);     
+  user_id INTEGER REFERENCES users (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+  slug_id INTEGER REFERENCES slugs (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+  PRIMARY KEY (user_id, slug_id)
+);

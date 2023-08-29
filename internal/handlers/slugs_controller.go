@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/neglarken/dynamic_user_segmentation_service/internal/entity"
@@ -20,7 +21,7 @@ func (h *Handler) CreateSlug() http.HandlerFunc {
 		s := &entity.Slugs{
 			Title: req.Title,
 		}
-		if err := h.service.Slugs.Create(req.Title); err != nil {
+		if err := h.service.Slugs.Create(s); err != nil {
 			h.error(w, r, http.StatusInternalServerError, err)
 			return
 		}
@@ -42,11 +43,16 @@ func (h *Handler) DeleteSlug() http.HandlerFunc {
 		s := &entity.Slugs{
 			Title: req.Title,
 		}
-		if err := h.service.Slugs.Delete(req.Title); err != nil {
+		if err := h.service.Slugs.Delete(s); err != nil {
 			h.error(w, r, http.StatusInternalServerError, err)
+			fmt.Println(err)
 			return
 		}
 
-		h.respond(w, r, http.StatusOK, s)
+		type response struct {
+			Status string `json:"status"`
+		}
+
+		h.respond(w, r, http.StatusOK, response{Status: "done"})
 	}
 }

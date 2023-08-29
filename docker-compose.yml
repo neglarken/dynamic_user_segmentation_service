@@ -1,8 +1,22 @@
 version: '1.0'
 
 services:
-  short-app:
+  segmentation-app:
     build: ./
     command: ./main
     ports:
-      - 8080:8080
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - DB_PASSWORD=postgres
+
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+    - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
