@@ -29,6 +29,8 @@ func NewRouter(h *Handler) *mux.Router {
 	router.HandleFunc("/slugs/", h.DeleteSlug()).Methods("DELETE")
 	router.HandleFunc("/slugsUsers/", h.AddUserInSlugs()).Methods("PUT")
 	router.HandleFunc("/slugsUsers/", h.GetUsersSlugs()).Methods("GET")
+	router.HandleFunc("/records/", h.GetRecordsByYM()).Methods("GET")
+	router.PathPrefix("/files/").Handler(h.files())
 	return router
 }
 

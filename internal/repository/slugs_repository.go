@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/neglarken/dynamic_user_segmentation_service/internal/entity"
 	"github.com/neglarken/dynamic_user_segmentation_service/internal/repository/repoerrors"
@@ -23,7 +22,6 @@ func (r *SlugsRepository) Create(s *entity.Slugs) error {
 		&s.Title,
 	).Scan(&s.Id, &s.Title)
 	if err != nil {
-		fmt.Println(err)
 		if err.Error() == "pq: duplicate key value violates unique constraint \"slugs_title_key\"" {
 			return repoerrors.ErrAlreadyExists
 		}
@@ -55,7 +53,7 @@ func (r *SlugsRepository) GetById(id int) (*entity.Slugs, error) {
 }
 
 func (r *SlugsRepository) Delete(s *entity.Slugs) error {
-	err := r.store.Db.QueryRow("DELETE FROM slugs WHERE title = $1", s.Title).Scan(&s.Id)
+	err := r.store.Db.QueryRow("DELETE FROM slugs WHERE title = $1 returning id", s.Title).Scan(&s.Id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return repoerrors.ErrNotFound

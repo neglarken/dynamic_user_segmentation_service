@@ -20,3 +20,19 @@ func (s *UsersService) Create(u *entity.Users) error {
 	}
 	return nil
 }
+
+func (s *UsersService) GetNumOfRandom(n int) ([]*entity.Users, error) {
+	us, err := s.usersRepo.GetNumOfRandom(n)
+	if err != nil {
+		return nil, err
+	}
+	return us, nil
+}
+
+func (s *UsersService) GetCount() (int, error) {
+	count, err := s.usersRepo.GetCount()
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

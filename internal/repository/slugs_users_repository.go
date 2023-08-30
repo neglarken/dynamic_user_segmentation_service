@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/neglarken/dynamic_user_segmentation_service/internal/entity"
 	"github.com/neglarken/dynamic_user_segmentation_service/internal/repository/repoerrors"
@@ -28,7 +27,6 @@ func (r *SlugsUsersRepository) Add(su *entity.SlugsUsers) error {
 	)
 	if err != nil {
 		if err.Error() == "pq: duplicate key value violates unique constraint \"slugs_users_pkey\"" {
-			fmt.Println(err)
 			return repoerrors.ErrAlreadyExists
 		}
 		return err

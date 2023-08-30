@@ -34,6 +34,15 @@ func (h *Handler) AddUserInSlugs() http.HandlerFunc {
 					h.error(w, r, http.StatusInternalServerError, err)
 					return
 				}
+				rec := &entity.Records{
+					UserId:    req.Id,
+					SlugTitle: req.TitleAdd[i],
+					Operation: "create",
+				}
+				if err := h.service.Records.Create(rec); err != nil {
+					h.error(w, r, http.StatusInternalServerError, err)
+					return
+				}
 			}
 		}
 
@@ -48,6 +57,15 @@ func (h *Handler) AddUserInSlugs() http.HandlerFunc {
 					UserId: req.Id,
 					SlugId: slug.Id,
 				}); err != nil {
+					h.error(w, r, http.StatusInternalServerError, err)
+					return
+				}
+				rec := &entity.Records{
+					UserId:    req.Id,
+					SlugTitle: req.TitleDelete[i],
+					Operation: "delete",
+				}
+				if err := h.service.Records.Create(rec); err != nil {
 					h.error(w, r, http.StatusInternalServerError, err)
 					return
 				}
