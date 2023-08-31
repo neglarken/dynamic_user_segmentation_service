@@ -1,36 +1,36 @@
 # Dynamic user segmentation service
-This is test task for avito tech.
-[x] Main task
-[x] Implement saving the user's hit/drop history from the segment
-[x] Implement the ability to set TTL
-[x] Automatically adding a user to a segment
-[ ] Testing
-[ ] Swagger documentation
+Это мое решение тестового задания от Avito Tech
+- [x] Основное задание
+- [x] Реализовать сохранение истории посещений/удалений пользователя из сегмента
+- [x] Реализовать возможность установки TTL
+- [x] Автоматическое добавление пользователя в сегмент
+- [ ] Тесты
+- [ ] Swagger документация
 
 # Get started
-To start application
+Запустить приложение
 
 ```
 docker-compose up
 ```
-Fill database
+Заполнить базу данных
 ```
 docker exec -i dynamic_user_segmentation_service-db-1 psql -U postgres < migrations/000001_init.up.sql
 ```
-## Requests
+## Заросы
 ### POST http://localhost:8080/users/
 ```
 {
     "id":1
 }
 ```
-Response:
+Ответ:
 ```
 {
     "id":1
 }
 ```
-Error response:
+Ответ ошибки:
 ```
 {
     "error":"already exists"
@@ -43,7 +43,7 @@ Error response:
     "part": 0
 }
 ```
-Response:
+Ответ:
 ```
 {
     "id":3,
@@ -51,7 +51,7 @@ Response:
 }
 
 ```
-Error response:
+Ответ ошибки:
 ```
 {
     "error":"already exists"
@@ -63,24 +63,24 @@ Error response:
     "title": "qwerty2"
 }
 ```
-Response:
+Ответ:
 ```
 {
     "status":"done"
 }
 
 ```
-Error response:
+Ответ ошибки:
 ```
 {
     "error":"not found"
 }
 ```
 ### PUT http://localhost:8080/slugsUsers/
-title_add - array of titles to add
-title_delete - array of titles to delete
-id - users id
-ttl - time to live in seconds
+- title_add - массив названий сегментов для добавления
+- title_delete - массив названий сегментов для удаления
+- id - id пользователя
+- ttl - время жизни в секундах
 
 ```
 {
@@ -90,20 +90,20 @@ ttl - time to live in seconds
     "ttl": 0
 }
 ```
-Response:
+Ответ:
 ```
 {
     "status":"done"
 }
 
 ```
-Error response:
+Ответ ошибки:
 ```
 {
     "error":"already exists"
 }
 ```
-Request:
+Запрос:
 ```
 {
     "title_add": [],
@@ -112,20 +112,20 @@ Request:
     "ttl": 0
 }
 ```
-Response:
+Ответ:
 ```
 {
     "status":"done"
 }
 
 ```
-Error response:
+Ответ ошибки:
 ```
 {
     "error":"not found"
 }
 ```
-Request:
+Запрос:
 ```
 {
     "title_add": ["qwerty1"],
@@ -134,20 +134,20 @@ Request:
     "ttl": 5
 }
 ```
-Response:
+Ответ:
 ```
 {
     "status":"done"
 }
 
 ```
-Error response:
+Ответ ошибки:
 ```
 {
     "error":"already exists"
 }
 ```
-5 seconds after adding the log to the console:
+Прошло 5 секунд после выполнения запроса:
 ```
 time="2023-08-31T18:42:44Z" level=info msg=deleted
 ```
@@ -157,14 +157,14 @@ time="2023-08-31T18:42:44Z" level=info msg=deleted
     "id": 1
 }
 ```
-Response:
+Ответ:
 ```
 {
     "user_id":1,
     "slugs":["qwerty3"]
 }
 ```
-Error response if user or users slugs does not exist:
+Ответ если пользователь не существует или он не привязан ни к одному сегменту:
 ```
 {
     "error":"not found"
@@ -174,10 +174,20 @@ Error response if user or users slugs does not exist:
 {
     "date": "2023-08"
 }
-Response:
-Link in browser:
-![link screenshot](https://github.com/neglarken/dynamic_user_segmentation_service/raw/master/link_screen.png)
+Ответ:
+Ссылка на странице браузера:
+![link screenshot](https://github.com/neglarken/dynamic_user_segmentation_service/blob/main/link_screen.png)
 ### GET http://localhost:8080/files/
-Response:
-Link in browser:
-![link screenshot](https://github.com/neglarken/dynamic_user_segmentation_service/raw/master/link_screen.png)
+Ответ - ссылка на странице браузера:
+![link screenshot](https://github.com/neglarken/dynamic_user_segmentation_service/blob/main/link_screen.png)
+
+### Вопросы, возникшие в ходе решения задачи
+- В каком виде возвращать ссылку на csv файл?
+    - Был вариант отдавать ссылку на файл в теле ответа, но тогда просмотр содержимого файла осуществлялся бы в окне браузера.
+Но я от него отказался, так как посчитал переадресацию на страницу со ссылкой, по которой можно скачать файл, более удобным способом.
+- Как удобно реализовать заполнение базы данных таблицами из sql файла?
+    - Долгий поиск в интернете дал множество плодов, но ни один из них не работал у меня, поэтому было решено заполнять инициализированную
+базу командой миграции, несмотря на то, что миграции не требовались в ТЗ.
+- Что должно выполнять механизм TTL? База данных или приложение?
+    - Написание триггеров в базе данных оказалось слишком долгим, поэтому было решено переложить ответственность за реализацию механизма TTL
+на приложение.
