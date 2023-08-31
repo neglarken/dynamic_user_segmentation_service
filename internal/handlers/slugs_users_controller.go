@@ -8,8 +8,17 @@ import (
 	"github.com/neglarken/dynamic_user_segmentation_service/internal/entity"
 )
 
+// @Summary Add users in slugs
+// @Description Add users in slugs
+// @Tags Segments
+// @Accept json
+// @Produce json
+// @Param input body handlers.AddUserInSlugs.Request true "input [title_add], [title_delete], id, ttl"
+// @Success 200 {object} handlers.AddUserInSlugs.Response
+// @Failure 500
+// @Router /slugsUsers/ [post]
 func (h *Handler) AddUserInSlugs() http.HandlerFunc {
-	type request struct {
+	type Request struct {
 		TitleAdd    []string `json:"title_add"`
 		TitleDelete []string `json:"title_delete"`
 		Id          int      `json:"id"`
@@ -19,7 +28,7 @@ func (h *Handler) AddUserInSlugs() http.HandlerFunc {
 		Status string `json:"status"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := &request{}
+		req := &Request{}
 		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 			h.error(w, r, http.StatusBadRequest, err)
 			return
@@ -108,12 +117,25 @@ func (h *Handler) AddUserInSlugs() http.HandlerFunc {
 	}
 }
 
+// @Summary Get users slugs
+// @Description Get users slugs
+// @Tags Segments
+// @Accept json
+// @Produce json
+// @Param input body handlers.AddUserInSlugs.Request true "input id"
+// @Success 200 {object} handlers.GetUsersSlugs.Response
+// @Failure 500
+// @Router /slugsUsers/ [get]
 func (h *Handler) GetUsersSlugs() http.HandlerFunc {
-	type request struct {
+	type Request struct {
 		Id int `json:"id"`
 	}
+	type Response struct {
+		UserId int      `json:"user_id"`
+		Slugs  []string `json:"slugs"`
+	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := &request{}
+		req := &Request{}
 		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 			h.error(w, r, http.StatusBadRequest, err)
 			return
@@ -131,11 +153,6 @@ func (h *Handler) GetUsersSlugs() http.HandlerFunc {
 				return
 			}
 			slugs = append(slugs, title.Title)
-		}
-
-		type Response struct {
-			UserId int      `json:"user_id"`
-			Slugs  []string `json:"slugs"`
 		}
 
 		h.respond(w, r, http.StatusOK, Response{UserId: req.Id, Slugs: slugs})

@@ -6,12 +6,21 @@ import (
 	"time"
 )
 
+// @Summary Get record by year-month
+// @Description Get link to records by year-month
+// @Tags record
+// @Accept json
+// @Produce json
+// @Param input body handlers.GetRecordsByYM.Request true "date year-month"
+// @Success 301
+// @Failure 500
+// @Router /records/ [get]
 func (h *Handler) GetRecordsByYM() http.HandlerFunc {
-	type request struct {
+	type Request struct {
 		Date string `json:"date"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := &request{}
+		req := &Request{}
 		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 			h.error(w, r, http.StatusBadRequest, err)
 			return
@@ -30,6 +39,12 @@ func (h *Handler) GetRecordsByYM() http.HandlerFunc {
 	}
 }
 
+// @Summary Get link to records
+// @Description Get link to records
+// @Tags record
+// @Success 301 {integer} integer
+// @Failure 404
+// @Router /files/ [get]
 func (h Handler) files() http.Handler {
 	return http.StripPrefix("/files", http.FileServer(http.Dir("./records")))
 }

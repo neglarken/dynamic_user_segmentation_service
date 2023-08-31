@@ -34,7 +34,6 @@ func (r *RecordsRepository) Create(rec *entity.Records) error {
 }
 
 func (r *RecordsRepository) GetToCsv(time time.Time) error {
-	// recs := make([]*entity.Records, 0)
 	rows, err := r.store.Db.Query(
 		"SELECT user_id, slug_title, operation, created_at FROM records WHERE EXTRACT(YEAR FROM created_at) = $1 AND EXTRACT(MONTH FROM created_at) = $2",
 		time.Year(),
@@ -48,21 +47,4 @@ func (r *RecordsRepository) GetToCsv(time time.Time) error {
 		return err
 	}
 	return nil
-	// for rows.Next() {
-	// 	rec := &entity.Records{}
-	// 	err := rows.Scan(
-	// 		&rec.UserId,
-	// 		&rec.SlugTitle,
-	// 		&rec.Operation,
-	// 		&rec.CreatedAt,
-	// 	)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	recs = append(recs, rec)
-	// }
-	// if len(recs) == 0 {
-	// 	return nil, repoerrors.ErrNotFound
-	// }
-	// return recs, nil
 }

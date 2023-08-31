@@ -7,13 +7,22 @@ import (
 	"github.com/neglarken/dynamic_user_segmentation_service/internal/entity"
 )
 
+// @Summary Create slug
+// @Description Create slug
+// @Tags slugs
+// @Accept json
+// @Produce json
+// @Param input body handlers.CreateSlug.Request true "input title and part"
+// @Success 200 {object} entity.Slugs
+// @Failure 500
+// @Router /slugs/ [post]
 func (h *Handler) CreateSlug() http.HandlerFunc {
-	type request struct {
+	type Request struct {
 		Title string `json:"title"`
 		Part  int    `json:"part"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := &request{}
+		req := &Request{}
 		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 			h.error(w, r, http.StatusBadRequest, err)
 			return
@@ -60,12 +69,24 @@ func (h *Handler) CreateSlug() http.HandlerFunc {
 	}
 }
 
+// @Summary Delete slug
+// @Description Delete slug
+// @Tags slugs
+// @Accept json
+// @Produce json
+// @Param input body handlers.DeleteSlug.Request true "input title"
+// @Success 200 {object} handlers.DeleteSlug.Response
+// @Failure 500
+// @Router /slugs/ [post]
 func (h *Handler) DeleteSlug() http.HandlerFunc {
-	type request struct {
+	type Request struct {
 		Title string `json:"title"`
 	}
+	type Response struct {
+		Status string `json:"status"`
+	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := &request{}
+		req := &Request{}
 		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 			h.error(w, r, http.StatusBadRequest, err)
 			return
@@ -78,10 +99,6 @@ func (h *Handler) DeleteSlug() http.HandlerFunc {
 			return
 		}
 
-		type response struct {
-			Status string `json:"status"`
-		}
-
-		h.respond(w, r, http.StatusOK, response{Status: "done"})
+		h.respond(w, r, http.StatusOK, Response{Status: "done"})
 	}
 }

@@ -5,8 +5,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	_ "github.com/neglarken/dynamic_user_segmentation_service/docs"
 	"github.com/neglarken/dynamic_user_segmentation_service/internal/service"
 	"github.com/sirupsen/logrus"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
 type Handler struct {
@@ -23,6 +25,10 @@ func NewHandler(service *service.Service) *Handler {
 
 func NewRouter(h *Handler) *mux.Router {
 	router := mux.NewRouter()
+
+	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
+	// router.Handle("/swagger/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/swagger/doc.json")))
+
 	router.Use(h.logRequest)
 	router.HandleFunc("/users/", h.CreateUser()).Methods("POST")
 	router.HandleFunc("/slugs/", h.CreateSlug()).Methods("POST")
@@ -31,6 +37,7 @@ func NewRouter(h *Handler) *mux.Router {
 	router.HandleFunc("/slugsUsers/", h.GetUsersSlugs()).Methods("GET")
 	router.HandleFunc("/records/", h.GetRecordsByYM()).Methods("GET")
 	router.PathPrefix("/files/").Handler(h.files())
+
 	return router
 }
 

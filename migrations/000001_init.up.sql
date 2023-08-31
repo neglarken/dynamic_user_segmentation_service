@@ -22,5 +22,5 @@ CREATE TABLE IF NOT EXISTS records
   user_id INTEGER NOT NULL,
   slug_title TEXT NOT NULL,
   operation TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT now(),
+  created_at TIMESTAMP DEFAULT now()
 )

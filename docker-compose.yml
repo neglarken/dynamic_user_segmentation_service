@@ -1,15 +1,18 @@
-version: '1.0'
+version: '3.8'
 
 services:
   segmentation-app:
     build: ./
-    command: ./main
+    command: ./wait-for-postgres.sh db ./main
     ports:
       - "8080:8080"
     depends_on:
       - db
     environment:
-      - DB_PASSWORD=postgres
+      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - .env
+      
 
   db:
     restart: always
@@ -18,5 +21,7 @@ services:
     - ./.database/postgres/data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
     ports:
       - "5432:5432"

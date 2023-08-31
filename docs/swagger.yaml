@@ -1,0 +1,210 @@
+basePath: /
+definitions:
+  entity.Slugs:
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+  entity.Users:
+    properties:
+      id:
+        type: integer
+    type: object
+  handlers.AddUserInSlugs.Request:
+    properties:
+      id:
+        type: integer
+      title_add:
+        items:
+          type: string
+        type: array
+      title_delete:
+        items:
+          type: string
+        type: array
+      ttl:
+        type: integer
+    type: object
+  handlers.AddUserInSlugs.Response:
+    properties:
+      status:
+        type: string
+    type: object
+  handlers.CreateSlug.Request:
+    properties:
+      part:
+        type: integer
+      title:
+        type: string
+    type: object
+  handlers.CreateUser.Request:
+    properties:
+      id:
+        type: integer
+    type: object
+  handlers.DeleteSlug.Request:
+    properties:
+      title:
+        type: string
+    type: object
+  handlers.DeleteSlug.Response:
+    properties:
+      status:
+        type: string
+    type: object
+  handlers.GetRecordsByYM.Request:
+    properties:
+      date:
+        type: string
+    type: object
+  handlers.GetUsersSlugs.Response:
+    properties:
+      slugs:
+        items:
+          type: string
+        type: array
+      user_id:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: khe.14@yandex.ru
+    name: Keril
+  description: This is a Dynamic User Segmentation Service.
+  title: Dynamic User Segmentation Service
+  version: "1.0"
+paths:
+  /files/:
+    get:
+      description: Get link to records
+      responses:
+        "301":
+          description: Moved Permanently
+          schema:
+            type: integer
+        "404":
+          description: Not Found
+      summary: Get link to records
+      tags:
+      - record
+  /records/:
+    get:
+      consumes:
+      - application/json
+      description: Get link to records by year-month
+      parameters:
+      - description: date year-month
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.GetRecordsByYM.Request'
+      produces:
+      - application/json
+      responses:
+        "301":
+          description: Moved Permanently
+        "500":
+          description: Internal Server Error
+      summary: Get record by year-month
+      tags:
+      - record
+  /slugs/:
+    post:
+      consumes:
+      - application/json
+      description: Delete slug
+      parameters:
+      - description: input title
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.DeleteSlug.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.DeleteSlug.Response'
+        "500":
+          description: Internal Server Error
+      summary: Delete slug
+      tags:
+      - slugs
+  /slugsUsers/:
+    get:
+      consumes:
+      - application/json
+      description: Get users slugs
+      parameters:
+      - description: input id
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.AddUserInSlugs.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.GetUsersSlugs.Response'
+        "500":
+          description: Internal Server Error
+      summary: Get users slugs
+      tags:
+      - Segments
+    post:
+      consumes:
+      - application/json
+      description: Add users in slugs
+      parameters:
+      - description: input [title_add], [title_delete], id, ttl
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.AddUserInSlugs.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AddUserInSlugs.Response'
+        "500":
+          description: Internal Server Error
+      summary: Add users in slugs
+      tags:
+      - Segments
+  /users/:
+    post:
+      consumes:
+      - application/json
+      description: Create user
+      parameters:
+      - description: input id
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateUser.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Users'
+        "500":
+          description: Internal Server Error
+      summary: Create user
+      tags:
+      - Users
+swagger: "2.0"

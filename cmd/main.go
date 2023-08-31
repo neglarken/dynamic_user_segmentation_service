@@ -17,6 +17,15 @@ func init() {
 	flag.StringVar(&configPath, "config-path", "config/config.yaml", "path to config file")
 }
 
+// @title           Dynamic User Segmentation Service
+// @version         1.0
+// @description     This is a Dynamic User Segmentation Service.
+
+// @contact.name   Keril
+// @contact.email  khe.14@yandex.ru
+
+// @host      localhost:8080
+// @BasePath  /
 func main() {
 	flag.Parse()
 
