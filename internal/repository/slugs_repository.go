@@ -32,7 +32,7 @@ func (r *SlugsRepository) Create(s *entity.Slugs) error {
 
 func (r *SlugsRepository) GetSlugIdBySlugTitle(title string) (*entity.Slugs, error) {
 	slug := &entity.Slugs{}
-	if err := r.store.Db.QueryRow("SELECT id FROM slugs WHERE title = $1", title).Scan(&slug.Id); err != nil {
+	if err := r.store.Db.QueryRow("SELECT id, title FROM slugs WHERE title = $1", title).Scan(&slug.Id, &slug.Title); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, repoerrors.ErrNotFound
 		}

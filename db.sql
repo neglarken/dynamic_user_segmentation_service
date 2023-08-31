@@ -23,5 +23,4 @@ CREATE TABLE IF NOT EXISTS records
   slug_title TEXT NOT NULL,
   operation TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT now(),
-  ttl INTERVAL
 )

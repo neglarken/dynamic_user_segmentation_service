@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/neglarken/dynamic_user_segmentation_service/internal/entity"
 )
@@ -12,6 +13,10 @@ func (h *Handler) AddUserInSlugs() http.HandlerFunc {
 		TitleAdd    []string `json:"title_add"`
 		TitleDelete []string `json:"title_delete"`
 		Id          int      `json:"id"`
+		Ttl         int      `json:"ttl"`
+	}
+	type Response struct {
+		Status string `json:"status"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &request{}
@@ -44,6 +49,33 @@ func (h *Handler) AddUserInSlugs() http.HandlerFunc {
 					return
 				}
 			}
+			if req.Ttl > 0 {
+				for i := 0; i < len(req.TitleAdd); i++ {
+					slug, err := h.service.Slugs.GetSlugIdBySlugTitle(req.TitleAdd[i])
+					if err != nil {
+						h.error(w, r, http.StatusInternalServerError, err)
+						return
+					}
+					timer := time.NewTimer(time.Duration(req.Ttl) * time.Second)
+					go func() {
+						<-timer.C
+						h.service.SlugsUsers.Delete(&entity.SlugsUsers{
+							UserId: req.Id,
+							SlugId: slug.Id,
+						})
+						rec := &entity.Records{
+							UserId:    req.Id,
+							SlugTitle: slug.Title,
+							Operation: "delete",
+						}
+						if err := h.service.Records.Create(rec); err != nil {
+							h.error(w, r, http.StatusInternalServerError, err)
+							return
+						}
+						h.Logger.Infoln("deleted")
+					}()
+				}
+			}
 		}
 
 		if len(req.TitleDelete) > 0 {
@@ -72,11 +104,6 @@ func (h *Handler) AddUserInSlugs() http.HandlerFunc {
 			}
 
 		}
-
-		type Response struct {
-			Status string `json:"status"`
-		}
-
 		h.respond(w, r, http.StatusOK, Response{Status: "done :)"})
 	}
 }
